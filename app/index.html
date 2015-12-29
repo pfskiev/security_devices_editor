@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App">
+<head>
+    <meta charset="UTF-8">
+    <title>Security</title>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/konva/konva.min.js"></script>
+    <script src="bower_components/localforage/dist/localforage.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers/main.controller.js"></script>
+    <script src="js/services/storage.service.js"></script>
+    <script src="js/services/konva.service.js"></script>
+
+</head>
+<body ng-controller="AppCtrl as ctrl">
+
+<h4 ng-bind="::title"></h4>
+<div id="container"></div>
+
+<label for="walls.width"></label>
+<input id="walls.width" type="text" ng-model="walls.width">
+
+<label for="walls.height"></label>
+<input id="walls.height" type="text" ng-model="walls.height">
+
+<button ng-click="ctrl.add(this, 'walls')">Create</button>
+
+<button ng-click="ctrl.toggle(this, 'draggable')">Freeze</button>
+
+
+<button ng-click="ctrl.add(this, 'pen')">Pen</button>
+<button ng-click="ctrl.add(this, 'window')">Window</button>
+<button ng-click="ctrl.add(this, 'column')">Column</button>
+<button ng-click="ctrl.add(this, 'door')">Door</button>
+<button ng-click="ctrl.add(this, 'camera')">Camera</button>
+<button ng-click="ctrl.add(this, 'alarm')">Alarm</button>
+<button ng-click="ctrl.add(this, 'extinguisher')">Extinguisher</button>
+<button ng-click="ctrl.add(this, 'sensor')">Sensor</button>
+
+</body>
+</html>
