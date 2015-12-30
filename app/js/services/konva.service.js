@@ -2,9 +2,13 @@
 
     function KonvaService (){
 
+        this.item = {};
+
     }
 
     KonvaService.prototype.create = function ($scope, shapes, canvas) {
+
+        debugger
 
         var _$scope, _this;
 
@@ -32,39 +36,60 @@
 
         for(var i = 0; i < shapes.length; i++) {
 
-            var box;
+            debugger
 
-            box = new Konva.Rect({
-                x: shapes[i].x,
-                y: shapes[i].y,
-                width: shapes[i].width,
-                height: shapes[i].height,
-                fill: shapes[i].color,
-                stroke: 'black',
-                strokeWidth: 4,
-                draggable: shapes[i].draggable,
-                rotation: shapes[i].rotation
-            });
+            if(shapes[i].type === 'Image') {
 
-            box.on('dragend', function (e) {
+                debugger
 
-                _this.position(_$scope, e, false)
+                var imageObj = new Image();
+                imageObj.src = shapes[i].src;
+                imageObj.onload = (function (i) {
 
-            });
+                    debugger
 
-            box.on('click', function (e) {
+                    var box = new Konva[shapes[i].type]({
 
-                _this.rotation(_$scope, e, false)
+                        x: shapes[i].x,
+                        y: shapes[i].y,
+                        width: shapes[i].width,
+                        height: shapes[i].height,
+                        fill: shapes[i].color,
+                        stroke: 'black',
+                        strokeWidth: 4,
+                        draggable: shapes[i].draggable,
+                        rotation: shapes[i].rotation,
+                        radius: shapes[i].radius,
+                        image: imageObj
 
-            });
+                    });
 
-            //box.on('', function (e) {
-            //
-            //    _this.remove(_$scope, e, false)
-            //
-            //});
+                    box.on('dragend', function (e) {
 
-            group.add(box);
+                        _this.position(_$scope, e, false)
+
+                    });
+
+                    box.on('click', function (e) {
+
+
+                        _$scope.ctrl.switch(_$scope, 'modal3', true);
+                        _this.item = e;
+                        _this.group = false;
+
+                    });
+
+                    group.add(box);
+                    layer.add(group);
+                    stage.add(layer);
+
+                })(i);
+
+            }
+
+            else {
+
+            }
 
         }
 
@@ -74,18 +99,23 @@
 
         });
 
-        layer.add(group);
-        stage.add(layer);
+        stage.on('contentClick', function(e) {
+
+            _this.createPoint(_$scope, e, false)
+
+        });
 
     };
 
-    KonvaService.prototype.remove = function ($scope, e, group) {
+    KonvaService.prototype.remove = function ($scope) {
 
-        if(!group){
+        debugger
+
+        if(!this.group){
 
             debugger
 
-            $scope.ctrl.canvas.shapes.splice(e.target.index, 1)
+            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(this.item.target.index, 1)
 
         }
 
@@ -100,8 +130,8 @@
 
             debugger
 
-            $scope.ctrl.canvas.group.x = e.target.attrs.x;
-            $scope.ctrl.canvas.group.y = e.target.attrs.y;
+            $scope.ctrl.floors[$scope.ctrl.current].plan.group.x = e.target.attrs.x;
+            $scope.ctrl.floors[$scope.ctrl.current].plan.group.y = e.target.attrs.y;
 
         }
 
@@ -109,8 +139,8 @@
 
             debugger
 
-            $scope.ctrl.canvas.shapes[e.target.index].x = e.target.attrs.x;
-            $scope.ctrl.canvas.shapes[e.target.index].y = e.target.attrs.y;
+            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[e.target.index].x = e.target.attrs.x;
+            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[e.target.index].y = e.target.attrs.y;
 
         }
 
@@ -118,13 +148,13 @@
 
     };
 
-    KonvaService.prototype.rotation = function ($scope, e, group) {
+    KonvaService.prototype.rotation = function ($scope) {
 
-        debugger
+        if(!this.group){
 
-        if(!group) {
+            debugger
 
-            $scope.ctrl.canvas.shapes[e.target.index].rotation = e.target.attrs.rotation + 90;
+            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[this.item.target.index].rotation = this.item.target.attrs.rotation + 90
 
         }
 
@@ -132,10 +162,21 @@
 
     };
 
+    KonvaService.prototype.createPoint = function ($scope, e) {
+
+        debugger
+
+        $scope.Point.x = e.evt.x;
+        $scope.Point.y = e.evt.y;
+        $scope.Point.radius = 20;
+        $scope.ctrl.add($scope, 'Point');
+
+    };
+
     KonvaService.prototype.update = function ($scope) {
 
-        $scope.ctrl.getPromise($scope, 'setData', 'canvas', $scope.ctrl.canvas, 'canvas');
-        $scope.ctrl.update($scope)
+        $scope.ctrl.getPromise($scope, 'setData', 'floors', $scope.ctrl.floors, 'floors');
+        $scope.ctrl.update($scope, $scope.ctrl.current)
 
     };
 

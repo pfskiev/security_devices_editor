@@ -22,6 +22,28 @@
         })
     };
 
+    StorageService.prototype.removeData = function (storageKey) {
+
+        return localforage.removeItem(storageKey, function(err, value) {
+
+            debugger;
+
+            console.log('Key deleted' + value);
+
+        });
+    };
+
+    StorageService.prototype.clearData = function () {
+
+        return localforage.clear(function(err, value) {
+
+            debugger;
+
+            console.log('Data deleted' + value);
+
+        });
+    };
+
     angular.module('App')
         .service('StorageService',  StorageService)
 
