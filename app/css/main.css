@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: none; }
+
+body {
+  background: floralwhite; }
+
+.active {
+  background: magenta; }
+
+.toggle {
+  background: magenta; }
+
+/*# sourceMappingURL=main.css.map */

@@ -8,6 +8,7 @@
         this.StorageService = StorageService;
         this.CANVAS = CANVAS;
         this.$timeout = $timeout;
+
         this.draggable = true;
         this.modal = false;
         this.modal2 = false;
@@ -19,17 +20,18 @@
         this.selection = '';
         this.aside = '';
 
-        $scope.Walls = {};
-        $scope.Window = {};
-        $scope.Door = {};
-        $scope.Column = {};
-        $scope.Camera = {};
-        $scope.Alarm = {};
-        $scope.Sensor = {};
-        $scope.Extinguisher = {};
-        $scope.Point = {};
-        $scope.firstPanel = ['Pen', 'Window', 'Column', 'Door'];
-        $scope.secondPanel = ['Camera', 'Alarm', 'Extinguisher', 'Sensor'];
+        $scope.walls = {};
+        $scope.window = {};
+        $scope.door = {};
+        $scope.column = {};
+        $scope.camera = {};
+        $scope.alarm = {};
+        $scope.sensor = {};
+        $scope.extinguisher = {};
+        $scope.point = {};
+        $scope.line = {};
+        $scope.firstPanel = ['pen', 'window', 'column', 'door'];
+        $scope.secondPanel = ['camera', 'alarm', 'extinguisher', 'sensor'];
 
         this.getPromise($scope, 'getData', 'floors', undefined, 'floors');
         this.switch($scope, 'selection', 'floors');
@@ -57,7 +59,48 @@
 
     AppCtrl.prototype.switch = function ($scope, key, value){
 
-        //debugger
+        var _this = this;
+
+        switch (value) {
+            case typeof value === "array":
+                debugger
+                fillArray(value)
+                break;
+            case value instanceof String || Number:
+                debugger
+                fillString(value)
+                break;
+            default:
+                debugger
+        }
+
+        function fillArray (value){
+
+            for (var toby = 0; toby < value.length; toby ++) {
+
+                if(key === "modal3") {
+
+                    _this.$timeout(function(){
+                        $scope.ctrl[key] = value;
+
+                    });
+                }
+            }
+        }
+
+        function fillString (value){
+
+            if(key === "modal3") {
+
+                _this.$timeout(function(){
+                    $scope.ctrl[key] = value;
+
+                });
+            }
+
+            debugger
+
+        }
 
         if(key === "modal3") {
 
@@ -118,39 +161,63 @@
 
     AppCtrl.prototype.add = function ($scope, name){
 
-        var type;
+        var type, lineX, lineY;
 
-        if(name !== 'Point'){
+        if(name === 'pen'){
 
-            type = 'Image'
+            this.KonvaService.draw = !this.KonvaService.draw;
 
+            console.log(this.KonvaService.draw);
+            this.update($scope, this.current);
+
+            return
+
+        }
+
+        else if(name === 'line'){
+
+            type = 'Line';
+            lineX = $scope[name].points[0];
+            lineY = $scope[name].points[1];
+
+
+        } else if(name === 'walls') {
+
+            type = 'Rect';
+
+        }
+
+        else if (name === 'point'){
+
+            type = 'Circle';
         }
 
         else {
 
-            type = 'Circle'
-
+            type = 'Image';
         }
+
+        debugger
+
+
 
         var shape = this.CANVAS.SHAPE(
 
-            $scope[name].x,
-            $scope[name].y,
+            $scope[name].x || lineX,
+            $scope[name].y || lineY,
             $scope[name].color,
             this.draggable,
-            $scope[name].width,
-            $scope[name].height,
+            $scope[name].width || this.CANVAS.SIZES[name].width || undefined,
+            $scope[name].height || this.CANVAS.SIZES[name].height || undefined,
             $scope[name].rotation,
             $scope[name].name = name,
             $scope[name].radius,
-            $scope[name].type = type);
-
-        if(type === 'Circle') {
-
-            $scope[name].width = 0;
-            $scope[name].height = 0;
-
-        }
+            $scope[name].type = type,
+            $scope[name].src,
+            $scope[name].stroke || this.CANVAS.SIZES[name].stroke,
+            $scope[name].strokeWidth || this.CANVAS.SIZES[name].strokeWidth,
+            $scope[name].points
+        );
 
         this.floors[this.current].plan.shapes.push(shape);
         this.update($scope, this.current);
@@ -164,13 +231,12 @@
 
         this.current = index;
 
-
         var shapes = [];
         for(var i = 0; i < this.floors[index].plan.shapes.length; i ++){
 
             debugger
 
-            var src = '../img/' + [this.floors[index].plan.shapes[i].name.toLowerCase()] + '_top.png';
+            var src = '../img/' + [this.floors[index].plan.shapes[i].name] + '_top.png';
 
             debugger
 
@@ -188,7 +254,11 @@
                     this.floors[index].plan.shapes[i].name,
                     this.floors[index].plan.shapes[i].radius,
                     this.floors[index].plan.shapes[i].type,
-                    src))
+                    src,
+                    this.floors[index].plan.shapes[i].stroke,
+                    this.floors[index].plan.shapes[i].strokeWidth,
+                    this.floors[index].plan.shapes[i].points
+                ))
 
         }
 
@@ -197,6 +267,13 @@
         this.KonvaService.create($scope, shapes, this.floors[index].plan)
 
     };
+
+    AppCtrl.prototype.clear = function ($scope) {
+
+        this.floors[this.current].plan.shapes.splice(0);
+        this.getPromise($scope, 'setData', 'floors', this.floors, 'floors', true)
+
+    }
 
     AppCtrl.prototype.getPromise = function ($scope, storageEvent, storageKey, storageValue, value, update) {
 
@@ -212,7 +289,7 @@
 
             if(update) {
 
-                $scope.ctrl.update($scope)
+                $scope.ctrl.update($scope, $scope.ctrl.current)
 
             }
 

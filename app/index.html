@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Security</title>
+    <link rel="stylesheet" href="css/main.css">
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/konva/konva.min.js"></script>
     <script src="bower_components/localforage/dist/localforage.min.js"></script>
@@ -10,16 +11,13 @@
     <script src="js/controllers/main.controller.js"></script>
     <script src="js/services/storage.service.js"></script>
     <script src="js/services/konva.service.js"></script>
-
 </head>
 <body ng-controller="AppCtrl as ctrl">
-
 <nav>
     <button ng-click="ctrl.switch(this, 'selection', 'floors'); ctrl.destroy(); ctrl.switch(this, 'sideNav', false)">Floors</button>
     <button ng-click="ctrl.switch(this, 'aside', 'plan')">floors plan</button>
     <button ng-click="ctrl.switch(this, 'aside', 'devices')">Devices</button>
 </nav>
-
 <section ng-switch on="ctrl.selection">
     <arcticle ng-switch-when="floors">
         <div ng-repeat="floor in ctrl.floors track by $index" >
@@ -30,13 +28,11 @@
     </arcticle>
     <arcticle ng-switch-when="plan">
         <button ng-click="ctrl.switch(this, 'modal', true)">Simple</button>
-        <button ng-click="ctrl.update(this, ctrl.current); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan')">Complex</button>
+        <button ng-click="ctrl.update(this, ctrl.current); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'none')">Complex</button>
     </arcticle>
 </section>
-
 <div style="border: 1px solid crimson" id="container"></div>
-
-<div style="width: 300px; height: 300px; background-color: red; position: absolute; left: 50%; top: 50%" ng-show="ctrl.modal === true">
+<div style="width: 300px; height: 300px; background-color: crimson; position: absolute; left: 50%; top: 50%" ng-show="ctrl.modal === true">
     <button ng-click="ctrl.switch(this, 'modal', false)">close</button>
     <label for="walls_width"></label>
     <input id="walls_width" type="text" ng-model="walls.width">
@@ -44,11 +40,10 @@
     <input id="walls_height" type="text" ng-model="walls.height">
     <button ng-click="ctrl.add(this, 'walls'); ctrl.switch(this, 'modal', false); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'none')">Create</button>
 </div>
-
 <aside ng-switch on="ctrl.aside" style="width: 300px; height: 100%; background-color: darkkhaki; position: fixed; right: 0; top: 0" ng-show="ctrl.sideNav === true">
     <div ng-switch-when="plan">
         <div ng-repeat="button in firstPanel track by $index">
-            <button ng-click="ctrl.add(this, this.firstPanel[this.$index])" ng-bind="button"></button>
+            <button ng-click="ctrl.add(this, this.firstPanel[this.$index])" ng-class="{'actice': ctrl.KonvaService.draw === true}" ng-bind="button"></button>
         </div>
     </div>
     <div ng-switch-when="devices">
@@ -58,19 +53,18 @@
     </div>
     <button ng-click="ctrl.toggle(this, 'draggable')">Freeze</button>
 </aside>
-
 <div style="width: 300px; height: 300px; background-color: darkkhaki; position: absolute; left: 50%; top: 50%" ng-show="ctrl.modal2 === true">
     <button ng-click="ctrl.switch(this, 'modal2', false)">close</button>
     <label for="floor_name"></label>
     <input id="floor_name" type="text" ng-model="floor.name">
     <button ng-click="ctrl.addFloor(this); ctrl.switch(this, 'modal2', false)">Create</button>
 </div>
-
 <div style="width: 300px; height: 300px; background-color: darkkhaki; position: fixed; left: 20px; top: 50px" ng-show="ctrl.modal3 === true">
     <button ng-click="ctrl.switch(this, 'modal3', false)">close</button>
     <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.rotation(this)">rotate</button>
     <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.remove(this)">delete</button>
+    <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)">clear</button>
+    <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.add(this, this.ctrl.KonvaService.item.target.attrs.name)">clone</button>
 </div>
-
 </body>
 </html>

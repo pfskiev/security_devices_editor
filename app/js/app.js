@@ -1,69 +1,100 @@
 (function(){
     angular.module('App', [])
         .constant('CANVAS', {
-            'SHAPE': function (x, y, color, draggable, width, height, rotation, name, radius, type, src){
+            'SHAPE': function (x, y, color, draggable, width, height, rotation, name, radius, type, src, stroke, strokeWidth, points){
+
                 var shape;
 
                 shape = {
                     x: x || 300,
                     y: y || 50,
-                    width: width || 300,
-                    height: height || 300,
+                    width: width,
+                    height: height,
                     fill: color || 'red',
                     draggable: draggable,
                     rotation: rotation || 0,
                     name: name,
                     radius: radius || 0,
                     type: type,
-                    src: src
+                    src: src,
+                    stroke: stroke,
+                    strokeWidth: strokeWidth,
+                    points: points
                 };
+
                 return shape
+
             },
 
-            WINDOW: function (x, y, height, width, degree, freeze) {
+            'SIZES': {
 
-                debugger
+                'pen': {
 
-                if(degree=== undefined){
-                    degree= 0;
+                    width: 300,
+                    height: 300
+
+                },
+                'window': {
+
+                    width: 194 / 2,
+                    height: 48 / 2
+                },
+                'column': {
+
+                    width: 76 / 2,
+                    height: 76 / 2
+
+                },
+                'door': {
+
+                    width: 87 / 2,
+                    height: 126 / 2
+                },
+                'camera': {
+
+                    width: 233 / 2,
+                    height: 236 / 2
+
+                },
+                'alarm': {
+
+                    width: 168 / 2,
+                    height: 166 / 2
+
+                },
+                'sensor': {
+
+                    width: 168 / 2,
+                    height: 166 / 2
+
+                },
+                'extinguisher': {
+
+                    width: 168 / 2,
+                    height: 166 / 2
+
+                },
+                'walls': {
+
+                    stroke: 'black',
+                    strokeWidth: 4
+
+                },
+
+                'line': {
+
+                    stroke: 'black',
+                    strokeWidth: 4
+
+                },
+
+                'point': {
+
+                    stroke: 'black',
+                    strokeWidth: 4
+
                 }
-
-                if(x === undefined){
-                    x = 50;
-                }
-
-                if(y === undefined){
-                    y = 50;
-                }
-
-                var shape, image;
-
-                image = new Image();
-
-                image.onload = function() {
-
-                    var buildShape;
-                    buildShape = {
-                        type: 'Image',
-                        image: image,
-                        x: x,
-                        y: y,
-                        width: 194 / 2,
-                        height: 48 / 2,
-                        rotation: degree,
-                        draggable: freeze
-                    };
-
-                    return buildShape
-
-                };
-
-                image.src = '../images/window_top.png';
-
-                shape = image.onload();
-
-                return shape
             }
-
         })
+
 }());

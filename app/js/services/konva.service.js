@@ -1,8 +1,10 @@
 (function(){
 
-    function KonvaService (){
+    function KonvaService ($timeout){
 
         this.item = {};
+        this.draw = false;
+        this.$timeout = $timeout;
 
     }
 
@@ -28,6 +30,7 @@
 
         var layer = new Konva.Layer();
         var group = new Konva.Group({
+
             x: canvas.group.x,
             y: canvas.group.y,
             draggable: true
@@ -36,61 +39,178 @@
 
         for(var i = 0; i < shapes.length; i++) {
 
-            debugger
+            switch (shapes[i].type) {
 
-            if(shapes[i].type === 'Image') {
+                case 'Image':
+                    buildImage(shapes[i]);
+                    break;
+                case 'Rect':
+                    buildRect(shapes[i]);
+                    break;
+                case 'Circle':
+                    buildCircle(shapes[i]);
+                    break;
+                case 'Line':
+                    buildLine(shapes[i]);
+                    break;
+                default:
+                    debugger
+            }
+
+            function buildRect(shape) {
+
+                debugger
+
+                var box = new Konva[shape.type]({
+
+                    x: shape.x,
+                    y: shape.y,
+                    width: shape.width,
+                    height: shape.height,
+                    stroke: shape.stroke,
+                    strokeWidth: shape.strokeWidth,
+                    rotation: shape.rotation,
+                    name: shape.name,
+                    draggable: shape.draggable
+
+                });
+
+                debugger
+
+                box.on('dragend', function (e) {
+
+                    _this.position(_$scope, e, false)
+
+                });
+
+                debugger
+
+                box.on('click', function (e) {
+
+                    _$scope.ctrl.switch(_$scope, 'modal3', true);
+                    _this.item = e;
+                    _this.group = false;
+
+                });
+
+                group.add(box);
+
+            }
+
+            function buildLine(shape) {
+
+                debugger
+
+                var box = new Konva.Line({
+
+                    stroke: shape.stroke,
+                    strokeWidth: shape.strokeWidth,
+                    draggable: shape.draggable,
+                    rotation: shape.rotation,
+                    points: shape.points
+
+                });
+
+                debugger
+
+                box.on('dragend', function (e) {
+
+                    _this.position(_$scope, e, false)
+
+                });
+
+                debugger
+
+                box.on('click', function (e) {
+
+                    _$scope.ctrl.switch(_$scope, 'modal3', true);
+                    _this.item = e;
+                    _this.group = false;
+
+                });
+
+                group.add(box);
+
+            }
+
+            function buildImage(shape) {
 
                 debugger
 
                 var imageObj = new Image();
-                imageObj.src = shapes[i].src;
-                imageObj.onload = (function (i) {
 
-                    debugger
+                imageObj.src = shape.src;
 
-                    var box = new Konva[shapes[i].type]({
+                var box = new Konva.Image({
 
-                        x: shapes[i].x,
-                        y: shapes[i].y,
-                        width: shapes[i].width,
-                        height: shapes[i].height,
-                        fill: shapes[i].color,
-                        stroke: 'black',
-                        strokeWidth: 4,
-                        draggable: shapes[i].draggable,
-                        rotation: shapes[i].rotation,
-                        radius: shapes[i].radius,
-                        image: imageObj
+                    x: shape.x,
+                    y: shape.y,
+                    width: shape.width,
+                    height: shape.height,
+                    draggable: shape.draggable,
+                    rotation: shape.rotation,
+                    name: shape.name,
+                    image: imageObj
 
-                    });
+                });
 
-                    box.on('dragend', function (e) {
+                debugger
 
-                        _this.position(_$scope, e, false)
+                box.on('dragend', function (e) {
 
-                    });
+                    _this.position(_$scope, e, false)
 
-                    box.on('click', function (e) {
+                });
 
+                debugger
 
-                        _$scope.ctrl.switch(_$scope, 'modal3', true);
-                        _this.item = e;
-                        _this.group = false;
+                box.on('click', function (e) {
 
-                    });
+                    _$scope.ctrl.switch(_$scope, 'modal3', true);
+                    _this.item = e;
+                    _this.group = false;
 
-                    group.add(box);
-                    layer.add(group);
-                    stage.add(layer);
+                });
 
-                })(i);
+                group.add(box);
 
             }
 
-            else {
+            function buildCircle(shape) {
+
+                var box = new Konva.Circle({
+
+                    x: shape.x,
+                    y: shape.y,
+                    stroke: shape.stroke,
+                    strokeWidth: shape.strokeWidth,
+                    draggable: shape.draggable,
+                    rotation: shape.rotation,
+                    radius: shape.radius
+
+                });
+
+                debugger
+
+                box.on('dragend', function (e) {
+
+                    _this.position(_$scope, e, false)
+
+                });
+
+                debugger
+
+                box.on('click', function (e) {
+
+                    _$scope.ctrl.switch(_$scope, 'modal3', true);
+                    _this.item = e;
+                    _this.group = false;
+
+                });
+
+                group.add(box);
 
             }
-
         }
 
         group.on('dragend', function(e) {
@@ -99,11 +219,26 @@
 
         });
 
-        stage.on('contentClick', function(e) {
+        if (this.draw){
 
-            _this.createPoint(_$scope, e, false)
+            stage.on('contentClick', function(e) {
 
-        });
+                _this.createPoint(_$scope, e, stage)
+
+            });
+
+        }
+
+        layer.add(group);
+
+        stage.add(layer);
+
+        //this.$timeout(function(){
+        //
+        //
+        //
+        //}, 10)
+
 
     };
 
@@ -120,7 +255,6 @@
         }
 
         this.update($scope);
-
 
     };
 
@@ -162,14 +296,59 @@
 
     };
 
-    KonvaService.prototype.createPoint = function ($scope, e) {
+    KonvaService.prototype.counter = function ($scope) {
 
         debugger
 
-        $scope.Point.x = e.evt.x;
-        $scope.Point.y = e.evt.y;
-        $scope.Point.radius = 20;
-        $scope.ctrl.add($scope, 'Point');
+        var define = {};
+        define.count = 0;
+        define.points = [];
+
+        for (var ty = 0; ty < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; ty ++) {
+
+            if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].name === 'point'){
+
+                debugger
+
+                define.count ++;
+                define.points.push($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].x);
+                define.points.push($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].y);
+
+            }
+        }
+
+        return define;
+
+    };
+
+    KonvaService.prototype.createPoint = function ($scope, e, stage) {
+
+        debugger
+
+        $scope.point.x = stage.pointerPos.x;
+        $scope.point.y = stage.pointerPos.y;
+        $scope.point.radius = 20;
+        $scope.ctrl.add($scope, 'point');
+
+        var define = this.counter($scope);
+
+        if(define.count === 2) {
+
+            for (var nb = 0; nb < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; nb ++) {
+
+                if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[nb].name === 'point'){
+
+                    debugger;
+
+                    $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(nb, 1)
+
+                }
+            }
+
+            $scope.line.points = define.points;
+            $scope.ctrl.add($scope, 'line');
+
+        }
 
     };
 
