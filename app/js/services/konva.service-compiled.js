@@ -1,23 +1,24 @@
-(function(){
+(function () {
 
-    function KonvaService ($timeout){
+    function KonvaService($timeout) {
 
         this.item = {};
         this.draw = false;
         this.$timeout = $timeout;
-
     }
 
     KonvaService.prototype.create = function ($scope, shapes, canvas) {
 
-        debugger
+        debugger;
 
         var _$scope, _this;
 
         _$scope = $scope;
         _this = this;
 
-        if (Konva.stages.length > 0) {Konva.stages[0].destroy()}
+        if (Konva.stages.length > 0) {
+            Konva.stages[0].destroy();
+        }
 
         var width = window.innerWidth;
         var height = window.innerHeight;
@@ -37,7 +38,7 @@
 
         });
 
-        for(var i = 0; i < shapes.length; i++) {
+        for (var i = 0; i < shapes.length; i++) {
 
             switch (shapes[i].type) {
 
@@ -54,12 +55,12 @@
                     buildLine(shapes[i]);
                     break;
                 default:
-                    debugger
+                    debugger;
             }
 
             function buildRect(shape) {
 
-                debugger
+                debugger;
 
                 var box = new Konva[shape.type]({
 
@@ -75,31 +76,28 @@
 
                 });
 
-                debugger
+                debugger;
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
-
+                    _this.position(_$scope, e, false);
                 });
 
-                debugger
+                debugger;
 
                 box.on('click', function (e) {
 
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
                     _this.group = false;
-
                 });
 
                 group.add(box);
-
             }
 
             function buildLine(shape) {
 
-                debugger
+                debugger;
 
                 var box = new Konva.Line({
 
@@ -111,31 +109,28 @@
 
                 });
 
-                debugger
+                debugger;
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
-
+                    _this.position(_$scope, e, false);
                 });
 
-                debugger
+                debugger;
 
                 box.on('click', function (e) {
 
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
                     _this.group = false;
-
                 });
 
                 group.add(box);
-
             }
 
             function buildImage(shape) {
 
-                debugger
+                debugger;
 
                 var imageObj = new Image();
 
@@ -154,26 +149,23 @@
 
                 });
 
-                debugger
+                debugger;
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
-
+                    _this.position(_$scope, e, false);
                 });
 
-                debugger
+                debugger;
 
                 box.on('click', function (e) {
 
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
                     _this.group = false;
-
                 });
 
                 group.add(box);
-
             }
 
             function buildCircle(shape) {
@@ -190,43 +182,37 @@
 
                 });
 
-                debugger
+                debugger;
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
-
+                    _this.position(_$scope, e, false);
                 });
 
-                debugger
+                debugger;
 
                 box.on('click', function (e) {
 
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
                     _this.group = false;
-
                 });
 
                 group.add(box);
-
             }
         }
 
-        group.on('dragend', function(e) {
+        group.on('dragend', function (e) {
 
-            _this.position(_$scope, e, true)
-
+            _this.position(_$scope, e, true);
         });
 
-        if (this.draw){
+        if (this.draw) {
 
-            stage.on('contentClick', function(e) {
+            stage.on('contentClick', function (e) {
 
-                _this.createPoint(_$scope, e, stage)
-
+                _this.createPoint(_$scope, e, stage);
             });
-
         }
 
         layer.add(group);
@@ -234,92 +220,79 @@
 
         //this.$timeout(function(){
         //}, 10)
-
-
     };
 
     KonvaService.prototype.remove = function ($scope) {
 
-        debugger
+        debugger;
 
-        if(!this.group){
+        if (!this.group) {
 
-            debugger
+            debugger;
 
-            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(this.item.target.index, 1)
-
+            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(this.item.target.index, 1);
         }
 
         this.update($scope);
-
     };
 
-    KonvaService.prototype.position = function ($scope, e, group){
+    KonvaService.prototype.position = function ($scope, e, group) {
 
-        if(group){
+        if (group) {
 
-            debugger
+            debugger;
 
             $scope.ctrl.floors[$scope.ctrl.current].plan.group.x = e.target.attrs.x;
             $scope.ctrl.floors[$scope.ctrl.current].plan.group.y = e.target.attrs.y;
+        } else {
 
-        }
-
-        else {
-
-            debugger
+            debugger;
 
             $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[e.target.index].x = e.target.attrs.x;
             $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[e.target.index].y = e.target.attrs.y;
-
         }
 
         this.update($scope);
-
     };
 
     KonvaService.prototype.rotation = function ($scope) {
 
-        if(!this.group){
+        if (!this.group) {
 
-            debugger
+            debugger;
 
-            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[this.item.target.index].rotation = this.item.target.attrs.rotation + 90
-
+            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[this.item.target.index].rotation = this.item.target.attrs.rotation + 90;
         }
 
-        this.update($scope)
-
+        this.update($scope);
     };
 
     KonvaService.prototype.counter = function ($scope) {
 
-        debugger
+        debugger;
 
         var define = {};
         define.count = 0;
         define.points = [];
 
-        for (var ty = 0; ty < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; ty ++) {
+        for (var ty = 0; ty < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; ty++) {
 
-            if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].name === 'point'){
+            if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].name === 'point') {
 
-                debugger
+                debugger;
 
-                define.count ++;
+                define.count++;
                 define.points.push($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].x);
                 define.points.push($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].y);
-
             }
         }
 
         return define;
-
     };
 
     KonvaService.prototype.createPoint = function ($scope, e, stage) {
 
-        debugger
+        debugger;
 
         $scope.point.x = stage.pointerPos.x;
         $scope.point.y = stage.pointerPos.y;
@@ -328,34 +301,30 @@
 
         var define = this.counter($scope);
 
-        if(define.count === 2) {
+        if (define.count === 2) {
 
-            for (var nb = 0; nb < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; nb ++) {
+            for (var nb = 0; nb < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; nb++) {
 
-                if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[nb].name === 'point'){
+                if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[nb].name === 'point') {
 
                     debugger;
 
-                    $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(nb, 1)
-
+                    $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(nb, 1);
                 }
             }
 
             $scope.line.points = define.points;
             $scope.ctrl.add($scope, 'line');
-
         }
-
     };
 
     KonvaService.prototype.update = function ($scope) {
 
         $scope.ctrl.getPromise($scope, 'setData', 'floors', $scope.ctrl.floors, 'floors');
-        $scope.ctrl.update($scope, $scope.ctrl.current)
-
+        $scope.ctrl.update($scope, $scope.ctrl.current);
     };
 
-    angular.module('App')
-        .service('KonvaService',  KonvaService)
+    angular.module('App').service('KonvaService', KonvaService);
+})();
 
-}());
+//# sourceMappingURL=konva.service-compiled.js.map

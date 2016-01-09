@@ -2,6 +2,8 @@
 
     function AppCtrl ($scope, $q, KonvaService, StorageService, CANVAS, $timeout){
 
+        let five = 5;
+
         this.$scope = $scope;
         this.$q = $q;
         this.KonvaService = KonvaService;
@@ -9,7 +11,7 @@
         this.CANVAS = CANVAS;
         this.$timeout = $timeout;
 
-        this.draggable = true;
+        this.draggable = false;
         this.modal = false;
         this.modal2 = false;
         this.modal3 = false;

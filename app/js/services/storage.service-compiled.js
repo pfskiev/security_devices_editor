@@ -40,3 +40,5 @@
 
     angular.module('App').service('StorageService', StorageService);
 })();
+
+//# sourceMappingURL=storage.service-compiled.js.map
