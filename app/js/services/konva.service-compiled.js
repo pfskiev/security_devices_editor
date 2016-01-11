@@ -1,3 +1,5 @@
+'use strict';
+
 (function () {
 
     function KonvaService($timeout) {
@@ -38,7 +40,7 @@
 
         });
 
-        for (var i = 0; i < shapes.length; i++) {
+        var _loop = function _loop() {
 
             switch (shapes[i].type) {
 
@@ -178,7 +180,8 @@
                     strokeWidth: shape.strokeWidth,
                     draggable: shape.draggable,
                     rotation: shape.rotation,
-                    radius: shape.radius
+                    radius: shape.radius,
+                    fill: shape.fill
 
                 });
 
@@ -200,6 +203,10 @@
 
                 group.add(box);
             }
+        };
+
+        for (var i = 0; i < shapes.length; i++) {
+            _loop();
         }
 
         group.on('dragend', function (e) {

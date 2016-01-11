@@ -186,7 +186,8 @@
                     strokeWidth: shape.strokeWidth,
                     draggable: shape.draggable,
                     rotation: shape.rotation,
-                    radius: shape.radius
+                    radius: shape.radius,
+                    fill: shape.fill
 
                 });
 

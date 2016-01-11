@@ -2,8 +2,6 @@
 
     function AppCtrl ($scope, $q, KonvaService, StorageService, CANVAS, $timeout){
 
-        let five = 5;
-
         this.$scope = $scope;
         this.$q = $q;
         this.KonvaService = KonvaService;

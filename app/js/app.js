@@ -10,7 +10,7 @@
                     y: y || 50,
                     width: width,
                     height: height,
-                    fill: color || 'red',
+                    fill: color,
                     draggable: draggable,
                     rotation: rotation || 0,
                     name: name,
@@ -90,8 +90,10 @@
 
                 'point': {
 
-                    stroke: 'black',
-                    strokeWidth: 4
+                    stroke: '#666',
+                    fill: '#ddd',
+                    strokeWidth: 2,
+                    radius: 8
 
                 }
             }
