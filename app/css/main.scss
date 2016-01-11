@@ -8,6 +8,8 @@ body {
   background: floralwhite;
 }
 
+
+
 .active {
 
   background: magenta;
@@ -18,4 +20,10 @@ body {
 
   background: magenta;
 
+}
+.floor_name{
+  display: inline;
+  position: absolute;
+  top: 30px;
+  left: 30px;
 }

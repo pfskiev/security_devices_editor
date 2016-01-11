@@ -1,12 +1,21 @@
 (function(){
 
-    function KonvaService ($timeout){
+    function KonvaService ($timeout, CANVAS){
 
         this.item = {};
         this.draw = false;
         this.$timeout = $timeout;
+        this.CANVAS = CANVAS;
 
     }
+
+    /**
+     * Represents a book.
+     * @constructor
+     * @param $scope - local scope;
+     * @param shapes - canvas shapes;
+     * @param canvas - canvas object;
+     */
 
     KonvaService.prototype.create = function ($scope, shapes, canvas) {
 
@@ -19,8 +28,8 @@
 
         if (Konva.stages.length > 0) {Konva.stages[0].destroy()}
 
-        var width = window.innerWidth;
-        var height = window.innerHeight;
+        var width = 1024;
+        var height = 500;
 
         var stage = new Konva.Stage({
             container: 'container',
@@ -100,22 +109,28 @@
             function buildLine(shape) {
 
                 debugger
-
                 var box = new Konva.Line({
 
                     stroke: shape.stroke,
                     strokeWidth: shape.strokeWidth,
                     draggable: shape.draggable,
                     rotation: shape.rotation,
-                    points: shape.points
+                    points: shape.points,
+                    x: shape.x || undefined,
+                    y: shape.y || undefined
 
                 });
+
+                if(box.attrs.x === _this.CANVAS.DEFAULTS.X && box.attrs.y === _this.CANVAS.DEFAULTS.Y) {
+                    delete box.attrs.x;
+                    delete box.attrs.y;
+                }
 
                 debugger
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
+                    _this.position(_$scope, e, group)
 
                 });
 
@@ -158,7 +173,7 @@
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
+                    _this.position(_$scope, e, group)
 
                 });
 
@@ -195,14 +210,14 @@
 
                 box.on('dragend', function (e) {
 
-                    _this.position(_$scope, e, false)
+                    _this.position(_$scope, e, group)
 
                 });
 
                 debugger
 
                 box.on('click', function (e) {
-
+                    debugger
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
                     _this.group = false;
@@ -215,8 +230,7 @@
         }
 
         group.on('dragend', function(e) {
-
-            _this.position(_$scope, e, true)
+            _this.position(_$scope, e)
 
         });
 
@@ -224,20 +238,30 @@
 
             stage.on('contentClick', function(e) {
 
-                _this.createPoint(_$scope, e, stage)
+                debugger
+
+                var lastPointerPosition = stage.getPointerPosition();
+                _this.createPoint(_$scope, e, lastPointerPosition, group);
 
             });
 
         }
 
-        layer.add(group);
-        stage.add(layer);
+        this.$timeout(function(){
 
-        //this.$timeout(function(){
-        //}, 10)
+            layer.add(group);
+            stage.add(layer);
+
+        }, 50)
 
 
     };
+
+    /**
+     * Removing canvas shape from localForage and canvas object.
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     */
 
     KonvaService.prototype.remove = function ($scope) {
 
@@ -255,36 +279,48 @@
 
     };
 
-    KonvaService.prototype.position = function ($scope, e, group){
+    /**
+     * Change shape position in canvas and update it's coordinate in localForage.
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     * @param e - represent item that changes position in canvas by event;
+     *
+     */
 
-        if(group){
-
-            debugger
-
-            $scope.ctrl.floors[$scope.ctrl.current].plan.group.x = e.target.attrs.x;
-            $scope.ctrl.floors[$scope.ctrl.current].plan.group.y = e.target.attrs.y;
-
-        }
-
-        else {
-
-            debugger
-
-            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[e.target.index].x = e.target.attrs.x;
-            $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[e.target.index].y = e.target.attrs.y;
-
+    KonvaService.prototype.position = function ($scope, e){
+        var floorPlan, x, y, index;
+        floorPlan = $scope.ctrl.floors[$scope.ctrl.current].plan;
+        x = e.target.attrs.x;
+        y = e.target.attrs.y;
+        index = e.target.index;
+        switch (e.target.className || e.target.nodeType) {
+            case 'Line':
+                floorPlan.shapes[index].x = x;
+                floorPlan.shapes[index].y = y;
+                break;
+            case 'Group':
+                floorPlan.group.x = x;
+                floorPlan.group.y = y;
+                break;
+            default:
+                floorPlan.shapes[index].x = x;
+                floorPlan.shapes[index].y = y;
         }
 
         this.update($scope);
 
     };
 
+    /**
+     * Change shape rotation in canvas and update it's in localForage.
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     *
+     */
+
     KonvaService.prototype.rotation = function ($scope) {
-
         if(!this.group){
-
             debugger
-
             $scope.ctrl.floors[$scope.ctrl.current].plan.shapes[this.item.target.index].rotation = this.item.target.attrs.rotation + 90
 
         }
@@ -293,51 +329,84 @@
 
     };
 
+    /**
+     * Counting points in floorPlan and if there
+     * are more than 2 initialize line creating.
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     *
+     */
+
     KonvaService.prototype.counter = function ($scope) {
 
         debugger
-
         var define = {};
+        var floorPlan = $scope.ctrl.floors[$scope.ctrl.current].plan;
         define.count = 0;
         define.points = [];
 
         for (var ty = 0; ty < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; ty ++) {
-
             if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].name === 'point'){
-
                 debugger
-
                 define.count ++;
-                define.points.push($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].x);
-                define.points.push($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[ty].y);
+                define.points.push(floorPlan.shapes[ty].x);
+                define.points.push(floorPlan.shapes[ty].y);
 
             }
+        }
+
+        var deltaX = define.points[0] - define.points[2];
+        var deltaY = define.points[1] - define.points[3];
+        if(deltaX > deltaY){
+            if(define.points[0] < define.points[2]){
+                define.points[2] = define.points[0]
+            }
+            else {
+                define.points[0] = define.points[2]
+
+            }
+        }
+        else {
+            define.points[3] = define.points[1]
         }
 
         return define;
 
     };
 
-    KonvaService.prototype.createPoint = function ($scope, e, stage) {
+    /**
+     * Create point for holding line coordinates before it creating
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     * @param e - represent canvas shape;
+     * @param lastPointerPosition - pointer position x and y;
+     * @param group - represent canvas group object;
+     *
+     */
+
+    KonvaService.prototype.createPoint = function ($scope, e, lastPointerPosition, group) {
 
         debugger
 
-        $scope.point.x = stage.pointerPos.x;
-        $scope.point.y = stage.pointerPos.y;
-        $scope.point.radius = 20;
+        $scope.point.x = lastPointerPosition.x - (group.attrs.x || 0);
+        $scope.point.y = lastPointerPosition.y - (group.attrs.y || 0);
+        $scope.point.radius = 5;
         $scope.ctrl.add($scope, 'point');
 
         var define = this.counter($scope);
+        var floorPlan = $scope.ctrl.floors[$scope.ctrl.current].plan;
+
+
 
         if(define.count === 2) {
 
-            for (var nb = 0; nb < $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.length; nb ++) {
+            for (var nb = 0; nb < floorPlan.shapes.length; nb ++) {
 
-                if ($scope.ctrl.floors[$scope.ctrl.current].plan.shapes[nb].name === 'point'){
+                if (floorPlan.shapes[nb].name === 'point'){
 
                     debugger;
 
-                    $scope.ctrl.floors[$scope.ctrl.current].plan.shapes.splice(nb, 1)
+                    floorPlan.shapes.splice(nb, 1)
 
                 }
             }
@@ -349,8 +418,14 @@
 
     };
 
-    KonvaService.prototype.update = function ($scope) {
+    /**
+     * Update data in localForage and canvas view
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     *
+     */
 
+    KonvaService.prototype.update = function ($scope) {
         $scope.ctrl.getPromise($scope, 'setData', 'floors', $scope.ctrl.floors, 'floors');
         $scope.ctrl.update($scope, $scope.ctrl.current)
 

@@ -1,15 +1,29 @@
 * {
   margin: 0;
   padding: 0;
-  border: none; }
+  border: none;
+}
 
 body {
-  background: floralwhite; }
+  background: floralwhite;
+}
+
+
 
 .active {
-  background: magenta; }
+
+  background: magenta;
+
+}
 
 .toggle {
-  background: magenta; }
 
-/*# sourceMappingURL=main.css.map */
+  background: magenta;
+
+}
+.floor.name{
+  display: inline;
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}

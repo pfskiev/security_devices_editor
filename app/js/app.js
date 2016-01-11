@@ -1,20 +1,31 @@
 (function(){
     angular.module('App', [])
         .constant('CANVAS', {
+
+            'DEFAULTS': {
+                X: 300,
+                Y: 50,
+                ROTATION: 0,
+                RADIUS: 0
+
+            },
             'SHAPE': function (x, y, color, draggable, width, height, rotation, name, radius, type, src, stroke, strokeWidth, points){
 
                 var shape;
 
+                debugger
+
                 shape = {
-                    x: x || 300,
-                    y: y || 50,
+
+                    x: x || this.DEFAULTS.X,
+                    y: y || this.DEFAULTS.Y,
                     width: width,
                     height: height,
                     fill: color,
                     draggable: draggable,
-                    rotation: rotation || 0,
+                    rotation: rotation || this.DEFAULTS.ROTATION,
                     name: name,
-                    radius: radius || 0,
+                    radius: radius || this.DEFAULTS.RADIUS,
                     type: type,
                     src: src,
                     stroke: stroke,

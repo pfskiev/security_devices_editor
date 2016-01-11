@@ -45,24 +45,14 @@
 
     };
 
-    AppCtrl.prototype.remove = function ($scope) {
-
-        this.KonvaService.remove($scope)
-
-    };
-
-    AppCtrl.prototype.rotation = function ($scope) {
-
-        this.KonvaService.rotation($scope)
-
-    };
-
     AppCtrl.prototype.switch = function ($scope, key, value){
 
         var _this = this;
 
+        debugger
+
         switch (value) {
-            case typeof value === "array":
+            case value instanceof Object:
                 debugger
                 fillArray(value)
                 break;
@@ -159,52 +149,38 @@
 
     };
 
+
     AppCtrl.prototype.add = function ($scope, name){
 
-        var type, lineX, lineY;
+        var type;
 
-        if(name === 'pen'){
+        switch (name) {
+            case 'pen':
+                this.KonvaService.draw = !this.KonvaService.draw;
+                console.log(this.KonvaService.draw);
+                this.update($scope, this.current);
+                return;
+                break;
+            case 'line':
+                type = 'Line';
+                break;
+            case 'walls':
+                type = 'Rect';
+                break;
+            case 'point':
+                type = 'Circle';
+                break;
+            default:
+                type = 'Image';
 
-            this.KonvaService.draw = !this.KonvaService.draw;
-
-            console.log(this.KonvaService.draw);
-            this.update($scope, this.current);
-
-            return
-
-        }
-
-        else if(name === 'line'){
-
-            type = 'Line';
-            lineX = $scope[name].points[0];
-            lineY = $scope[name].points[1];
-
-
-        } else if(name === 'walls') {
-
-            type = 'Rect';
-
-        }
-
-        else if (name === 'point'){
-
-            type = 'Circle';
-        }
-
-        else {
-
-            type = 'Image';
         }
 
         debugger
 
-
-
         var shape = this.CANVAS.SHAPE(
 
-            $scope[name].x || lineX,
-            $scope[name].y || lineY,
+            $scope[name].x,
+            $scope[name].y,
             $scope[name].color,
             this.draggable,
             $scope[name].width || this.CANVAS.SIZES[name].width || undefined,
