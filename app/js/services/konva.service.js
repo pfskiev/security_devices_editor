@@ -111,6 +111,7 @@
             function buildLine(shape) {
 
                 debugger
+
                 var box = new Konva.Line({
 
                     stroke: shape.stroke,
@@ -124,11 +125,31 @@
                 });
 
                 if(box.attrs.x === _this.CANVAS.DEFAULTS.X && box.attrs.y === _this.CANVAS.DEFAULTS.Y) {
+
                     delete box.attrs.x;
                     delete box.attrs.y;
+
                 }
 
                 debugger
+
+                var simpleLabel = new Konva.Label({
+                    x: shape.points[0],
+                    y: shape.points[2],
+                    opacity: 0.75
+                });
+
+                simpleLabel.add(new Konva.Tag({
+                    fill: 'yellow'
+                }));
+
+                simpleLabel.add(new Konva.Text({
+                    text: shape.points[0] - shape.points[2],
+                    fontFamily: 'Calibri',
+                    fontSize: 18,
+                    padding: 5,
+                    fill: 'black'
+                }));
 
                 box.on('dragend', function (e) {
 
@@ -146,7 +167,8 @@
 
                 });
 
-                group.add(box);
+                group.add(box)
+                layer.add(simpleLabel);
 
             }
 

@@ -35,6 +35,11 @@ aside {
 
 i {
   color: #979797;
+  transition: color 0.2s ease;
+}
+
+i:hover {
+  color: black;
 }
 
 body {
