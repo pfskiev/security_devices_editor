@@ -29,7 +29,7 @@
         if (Konva.stages.length > 0) {Konva.stages[0].destroy()}
 
         var width = 1024;
-        var height = 500;
+        var height = 653;
 
         var stage = new Konva.Stage({
             container: 'container',
@@ -96,6 +96,8 @@
 
                 box.on('click', function (e) {
 
+                    debugger
+
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
                     _this.group = false;
@@ -134,9 +136,9 @@
 
                 });
 
-                debugger
-
                 box.on('click', function (e) {
+
+                    debugger
 
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
@@ -177,13 +179,21 @@
 
                 });
 
-                debugger
-
                 box.on('click', function (e) {
 
-                    _$scope.ctrl.switch(_$scope, 'modal3', true);
-                    _this.item = e;
-                    _this.group = false;
+                    if(e.target.attrs.name == 'camera'){
+
+                        alert('Hello')
+
+                        debugger
+
+                    }
+                    else {
+                        _$scope.ctrl.switch(_$scope, 'modal3', true);
+                        _this.item = e;
+                        _this.group = false;
+
+                    }
 
                 });
 
@@ -357,17 +367,14 @@
 
         var deltaX = define.points[0] - define.points[2];
         var deltaY = define.points[1] - define.points[3];
-        if(deltaX > deltaY){
-            if(define.points[0] < define.points[2]){
-                define.points[2] = define.points[0]
-            }
-            else {
-                define.points[0] = define.points[2]
 
-            }
+        if(Math.abs(deltaX) > Math.abs(deltaY)){
+            define.points[3] = define.points[1]
+
         }
         else {
-            define.points[3] = define.points[1]
+            define.points[2] = define.points[0]
+
         }
 
         return define;
@@ -417,6 +424,44 @@
         }
 
     };
+
+    /**
+     * Update data in localForage and canvas view
+     * @constructor
+     * @param $scope - represent local scope from which controller was request;
+     *
+     */
+
+    KonvaService.prototype.changeLineLength = function ($scope) {
+
+
+        debugger
+
+        var len = parseFloat($scope.ctrl.line_length)
+        var item = this.item.target.attrs.points;
+        var deltaX = item[0] - item[2];
+        var deltaY = item[1] - item[3];
+
+        if(Math.abs(deltaX) > Math.abs(deltaY)){
+
+
+            debugger
+
+
+            item[2] = item[0] + len;
+
+
+        }
+        else {
+
+            item[3] = item[1] + len;
+
+
+        }
+
+        this.update($scope)
+
+    }
 
     /**
      * Update data in localForage and canvas view

@@ -19,6 +19,7 @@
         this.current = '';
         this.selection = '';
         this.aside = '';
+        this.line_length = '';
 
         $scope.walls = {};
         $scope.window = {};
@@ -30,8 +31,8 @@
         $scope.extinguisher = {};
         $scope.point = {};
         $scope.line = {};
-        $scope.firstPanel = ['pen', 'window', 'column', 'door'];
-        $scope.secondPanel = ['camera', 'alarm', 'extinguisher', 'sensor'];
+        $scope.firstPanel = ['pen', 'window', 'door', 'column'];
+        $scope.secondPanel = ['camera', 'extinguisher', 'sensor', 'alarm'];
 
         this.getPromise($scope, 'getData', 'floors', undefined, 'floors');
         this.switch($scope, 'selection', 'floors');
@@ -46,51 +47,6 @@
     };
 
     AppCtrl.prototype.switch = function ($scope, key, value){
-
-        var _this = this;
-
-        debugger
-
-        switch (value) {
-            case value instanceof Object:
-                debugger
-                fillArray(value)
-                break;
-            case value instanceof String || Number:
-                debugger
-                fillString(value)
-                break;
-            default:
-                debugger
-        }
-
-        function fillArray (value){
-
-            for (var toby = 0; toby < value.length; toby ++) {
-
-                if(key === "modal3") {
-
-                    _this.$timeout(function(){
-                        $scope.ctrl[key] = value;
-
-                    });
-                }
-            }
-        }
-
-        function fillString (value){
-
-            if(key === "modal3") {
-
-                _this.$timeout(function(){
-                    $scope.ctrl[key] = value;
-
-                });
-            }
-
-            debugger
-
-        }
 
         if(key === "modal3") {
 
@@ -153,8 +109,10 @@
     AppCtrl.prototype.add = function ($scope, name){
 
         var type;
+        var shapeName = name.toLowerCase();
+        var _this = this
 
-        switch (name) {
+        switch (shapeName) {
             case 'pen':
                 this.KonvaService.draw = !this.KonvaService.draw;
                 console.log(this.KonvaService.draw);
@@ -163,37 +121,73 @@
                 break;
             case 'line':
                 type = 'Line';
+                compileLine();
                 break;
             case 'walls':
                 type = 'Rect';
+                other();
                 break;
             case 'point':
                 type = 'Circle';
+                other();
                 break;
             default:
                 type = 'Image';
+                other()
 
         }
 
         debugger
 
-        var shape = this.CANVAS.SHAPE(
+        var shape;
 
-            $scope[name].x,
-            $scope[name].y,
-            $scope[name].color,
-            this.draggable,
-            $scope[name].width || this.CANVAS.SIZES[name].width || undefined,
-            $scope[name].height || this.CANVAS.SIZES[name].height || undefined,
-            $scope[name].rotation,
-            $scope[name].name = name,
-            $scope[name].radius,
-            $scope[name].type = type,
-            $scope[name].src,
-            $scope[name].stroke || this.CANVAS.SIZES[name].stroke,
-            $scope[name].strokeWidth || this.CANVAS.SIZES[name].strokeWidth,
-            $scope[name].points
-        );
+        function compileLine(){
+
+            shape = _this.CANVAS.SHAPE(
+
+                $scope[shapeName].x,
+                $scope[shapeName].y,
+                $scope[shapeName].color,
+                _this.draggable,
+                $scope[shapeName].width || _this.CANVAS.SIZES[shapeName].width || undefined,
+                $scope[shapeName].height || _this.CANVAS.SIZES[shapeName].height || undefined,
+                $scope[shapeName].rotation,
+                $scope[shapeName].name = shapeName,
+                $scope[shapeName].radius,
+                $scope[shapeName].type = type,
+                $scope[shapeName].src,
+                $scope[shapeName].stroke || _this.CANVAS.SIZES[shapeName].stroke,
+                $scope[shapeName].strokeWidth || _this.CANVAS.SIZES[shapeName].strokeWidth,
+                $scope[shapeName].points || $scope.ctrl.KonvaService.item.target.attrs.points
+            );
+
+            return shape
+
+        }
+
+        function other(){
+
+            shape = _this.CANVAS.SHAPE(
+
+                $scope[shapeName].x,
+                $scope[shapeName].y,
+                $scope[shapeName].color,
+                _this.draggable,
+                $scope[shapeName].width || _this.CANVAS.SIZES[shapeName].width || undefined,
+                $scope[shapeName].height || _this.CANVAS.SIZES[shapeName].height || undefined,
+                $scope[shapeName].rotation,
+                $scope[shapeName].name = shapeName,
+                $scope[shapeName].radius,
+                $scope[shapeName].type = type,
+                $scope[shapeName].src,
+                $scope[shapeName].stroke || _this.CANVAS.SIZES[shapeName].stroke,
+                $scope[shapeName].strokeWidth || _this.CANVAS.SIZES[shapeName].strokeWidth
+
+            );
+
+            return shape
+
+        }
 
         this.floors[this.current].plan.shapes.push(shape);
         this.update($scope, this.current);

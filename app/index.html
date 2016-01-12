@@ -14,61 +14,98 @@
     <script src="js/services/konva.service.js"></script>
 </head>
 <body ng-controller="AppCtrl as ctrl">
-<h4 ng-show="ctrl.selection === undefined" class="floor name">{{ctrl.floors[ctrl.current].name}}</h4>
+<h4 ng-show="ctrl.selection === undefined" class="floor_header">{{ctrl.floors[ctrl.current].name}}</h4>
+<a ng-show="ctrl.selection === undefined" ng-click="ctrl.toggle(this, 'draggable')"><i class="locker fa" ng-class="{'fa-lock': ctrl.draggable === false, 'fa-unlock': ctrl.draggable === true}"></i></a>
 <nav>
-    <button ng-click="ctrl.switch(this, 'selection', 'floors'); ctrl.destroy(); ctrl.switch(this, 'sideNav', false)">Floors</button>
-    <button ng-click="ctrl.switch(this, 'aside', 'plan')">floors plan</button>
-    <button ng-click="ctrl.switch(this, 'aside', 'devices')">Devices</button>
+    <a class="left active"
+       ng-click="ctrl.switch(this, 'selection', 'floors'); ctrl.destroy(); ctrl.switch(this, 'sideNav', false)">
+        <span class="icon-floor active"></span>
+        <p class="title">Floors</p>
+    </a>
+    <a class="center"
+       ng-click="ctrl.switch(this, 'aside', 'plan')">
+        <span class="icon-floor-plan"></span>
+        <p class="title">floor plan</p>
+    </a>
+    <a class="right"
+       ng-click="ctrl.switch(this, 'aside', 'devices')">
+        <span class="icon-devices"></span>
+        <p class="title">Devices</p>
+    </a>
 </nav>
 <section ng-switch on="ctrl.selection">
-    <arcticle ng-switch-when="floors">
+    <article ng-switch-when="floors">
         <div ng-repeat="floor in ctrl.floors track by $index" >
-            <button ng-click="ctrl.checkPlan(this, this.$index)" ng-bind="floor.name"></button>
-            <button ng-click="ctrl.delete(this, this.$index)"><i class="fa fa-trash"></i></button>
+            <a class="floor" ng-click="ctrl.checkPlan(this, this.$index)">
+                <i class="fa fa-trash remove" ng-click="ctrl.delete(this, this.$index)"></i>
+                <p class="title" ng-bind="floor.name"></p>
+            </a>
         </div>
-        <button ng-click="ctrl.switch(this, 'modal2', true)">Add floor</button>
-    </arcticle>
-    <arcticle ng-switch-when="plan">
-        <button ng-click="ctrl.switch(this, 'modal', true)">Simple</button>
-        <button ng-click="ctrl.update(this, ctrl.current); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'none')">Complex</button>
-    </arcticle>
+        <a class="add_floor"
+           ng-click="ctrl.switch(this, 'modal2', true)">
+            <p class="title">Create new plan</p>
+        </a>
+    </article>
+    <article ng-switch-when="plan">
+        <h2 class="floor-title" ng-bind="ctrl.floors[ctrl.current].name"></h2>
+        <a class="simple" ng-click="ctrl.switch(this, 'modal', true)">
+            <p class="title">Simple</p>
+        </a>
+        <a class="complex"
+           ng-click="
+           ctrl.update(this, ctrl.current);
+           ctrl.switch(this, 'sideNav', true);
+           ctrl.switch(this, 'aside', 'plan');
+           ctrl.switch(this, 'selection', 'none')">
+            <p class="title">Complex</p>
+        </a>
+    </article>
 </section>
-<div style="border: 1px solid crimson" id="container"></div>
-<aside ng-switch on="ctrl.aside" style="width: 300px; height: 100%; background-color: darkkhaki; position: fixed; right: 0; top: 0" ng-show="ctrl.sideNav === true">
+<div ng-show="ctrl.selection === undefined" class="drawing" id="container"></div>
+<aside ng-switch on="ctrl.aside" ng-show="ctrl.sideNav === true">
     <div ng-switch-when="plan">
         <div ng-repeat="button in firstPanel track by $index">
-            <button ng-click="ctrl.add(this, this.firstPanel[this.$index])" ng-class="{'actice': ctrl.KonvaService.draw === true}" ng-bind="button"></button>
+            <a class="{{button}}"
+               ng-click="ctrl.add(this, this.firstPanel[this.$index])"
+               ng-class="{'actice': ctrl.KonvaService.draw === true}">
+                <span class="icon-{{button}}"></span>
+                <p ng-hide="button === 'pen'" class="title" ng-bind="button"></p>
+            </a>
         </div>
     </div>
     <div ng-switch-when="devices">
         <div ng-repeat="button in secondPanel track by $index">
-            <button ng-click="ctrl.add(this, this.secondPanel[this.$index])" ng-bind="button"></button>
+            <a class="{{button}}" ng-click="ctrl.add(this, this.secondPanel[this.$index])">
+                <span class="icon-{{button}}"></span>
+                <p class="title" ng-bind="button"></p>
+            </a>
         </div>
     </div>
-    <button ng-click="ctrl.toggle(this, 'draggable')">Freeze</button>
 </aside>
-<div style="width: 300px; height: 300px; background-color: crimson; position: absolute; left: 50%; top: 50%" ng-show="ctrl.modal === true">
-    <button ng-click="ctrl.switch(this, 'modal', false)">close</button>
-    <label for="walls_width"></label>
+<div class="modal create walls" ng-show="ctrl.modal === true">
+    <a ng-click="ctrl.switch(this, 'modal', false)"><i class="fa fa-times"></i></a>
+    <label class="title" for="walls_width">Enter plan width/height</label>
     <input id="walls_width" type="text" ng-model="walls.width">
-    <label for="walls_height"></label>
     <input id="walls_height" type="text" ng-model="walls.height">
-    <button ng-click="ctrl.add(this, 'walls'); ctrl.switch(this, 'modal', false); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'none')">Create</button>
+    <a class="add" ng-click="ctrl.add(this, 'walls'); ctrl.switch(this, 'modal', false); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'none')">Create</a>
 </div>
-<div style="width: 300px; height: 300px; background-color: darkkhaki; position: absolute; left: 50%; top: 50%" ng-show="ctrl.modal2 === true">
-    <button ng-click="ctrl.switch(this, 'modal2', false)">close</button>
-    <label for="floor_name"></label>
+<div class="modal create" ng-show="ctrl.modal2 === true">
+    <a ng-click="ctrl.switch(this, 'modal2', false)"><i class="fa fa-times"></i></a>
+    <label class="title" for="floor_name">Enter plan name</label>
     <input id="floor_name" type="text" ng-model="floor.name">
-    <button ng-click="ctrl.addFloor(this); ctrl.switch(this, 'modal2', false)">Create</button>
+    <a class="add" ng-click="ctrl.addFloor(this); ctrl.switch(this, 'modal2', false)">Create</a>
 </div>
 <div style="width: 300px; height: 300px; background-color: darkkhaki; position: fixed; left: 20px; top: 50px" ng-show="ctrl.modal3 === true">
-    <button ng-click="ctrl.switch(this, 'modal3', false)"><i class="fa fa-times"></i>close</button>
-    <button ng-hide="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.KonvaService.rotation(this)"><i class="fa fa-undo"></i>rotate</button>
-    <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.KonvaService.remove(this)"><i class="fa fa-trash"></i>delete</button>
-    <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)"><i class="fa fa-trash"></i>clear</button>
-    <button ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)">horizontal</button>
-    <button ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)">vertical</button>
-    <button ng-click="ctrl.switch(this, 'modal3', false); ctrl.add(this, this.ctrl.KonvaService.item.target.attrs.name)"><i class="fa fa-clone"></i>clone</button>
+    <a ng-click="ctrl.switch(this, 'modal3', false)"><i class="fa fa-times"></i>close</a>
+    <a ng-hide="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.KonvaService.rotation(this)"><i class="fa fa-undo"></i>rotate</a>
+    <a ng-click="ctrl.switch(this, 'modal3', false); ctrl.KonvaService.remove(this)"><i class="fa fa-trash"></i>delete</a>
+    <a ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)"><i class="fa fa-trash"></i>clear</a>
+    <a ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)">horizontal</a>
+    <a ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.clear(this)">vertical</a>
+    <a ng-click="ctrl.switch(this, 'modal3', false); ctrl.add(this, this.ctrl.KonvaService.item.target.className)"><i class="fa fa-clone"></i>clone</a>
+    <label for="line_length">Line Length</label>
+    <input id="line_length" type="text" ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-model="ctrl.line_length">
+    <a ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.KonvaService.changeLineLength(this)">save</a>
 </div>
 </body>
 </html>
