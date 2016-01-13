@@ -456,7 +456,6 @@
 
     KonvaService.prototype.changeLineLength = function ($scope) {
 
-
         debugger
 
         var len = parseFloat($scope.ctrl.line_length)

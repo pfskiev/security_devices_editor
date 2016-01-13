@@ -35,7 +35,7 @@ i:hover {
 
 body {
   background: url("../img/fon.jpg");
-  background-size: 1024px;
+  background-size: cover;
   width: 1024px;
   height: 768px;
   font: 24px/28px 'helveticaneuecyrmedium', sans-serif;
@@ -96,7 +96,7 @@ nav {
   background-size: cover; }
 
 .right:hover {
-  background: url("../img/tab2.png");
+  background: url("../img/tab3.png");
   background-size: cover; }
 
 .floor {
@@ -418,5 +418,12 @@ aside a {
 
 .locker:hover {
   color: red; }
+
+.background-popup {
+  background-color: rgba(41, 41, 41, 0.5);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 5000; }
 
 /*# sourceMappingURL=main.css.map */
