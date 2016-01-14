@@ -134,10 +134,12 @@
                 debugger
 
                 var simpleLabel = new Konva.Label({
-                    x: shape.points[0],
-                    y: shape.points[2],
+                    x: _this.getCoordinates().x,
+                    y: _this.getCoordinates().y,
                     opacity: 0.75
                 });
+
+                debugger
 
                 simpleLabel.add(new Konva.Tag({
                     fill: 'yellow'
@@ -406,7 +408,8 @@
     /**
      * Create point for holding line coordinates before it creating
      * @constructor
-     * @param $scope - represent local scope from which controller was request;
+     * @param $scope - represent local scope from which
+     * controller this function was invoke;
      * @param e - represent canvas shape;
      * @param lastPointerPosition - pointer position x and y;
      * @param group - represent canvas group object;
@@ -483,6 +486,23 @@
         this.update($scope)
 
     }
+
+    KonvaService.prototype.getCoordinates = function ($scope){
+
+        var target;
+
+        if(this.item.target.attrs){
+            target = this.item.target.attrs
+        }
+        else {
+
+        }
+        var coordinate = {};
+        coordinate.x = target.x;
+        coordinate.y = target.y;
+        return coordinate;
+
+    };
 
     /**
      * Update data in localForage and canvas view
