@@ -14,8 +14,8 @@
     <script src="js/services/konva.service.js"></script>
 </head>
 <body ng-controller="AppCtrl as ctrl">
-<h4 ng-show="ctrl.selection === undefined" class="floor_header">{{ctrl.floors[ctrl.current].name}}</h4>
-<a ng-show="ctrl.selection === undefined" ng-click="ctrl.toggle(this, 'draggable')"><i class="locker fa" ng-class="{'fa-lock': ctrl.draggable === false, 'fa-unlock': ctrl.draggable === true}"></i></a>
+<h4 ng-show="ctrl.selection === 'draw_panel'" class="floor_header">{{ctrl.floors[ctrl.current].name}}</h4>
+<a ng-show="ctrl.selection === 'draw_panel'" ng-click="ctrl.toggle(this, 'draggable')"><i class="locker fa" ng-class="{'fa-lock': ctrl.draggable === false, 'fa-unlock': ctrl.draggable === true}"></i></a>
 <nav>
     <a class="left"
        ng-class="{'active': ctrl.selection === 'floors'}"
@@ -63,12 +63,12 @@
            ctrl.update(this, ctrl.current);
            ctrl.switch(this, 'sideNav', true);
            ctrl.switch(this, 'aside', 'plan');
-           ctrl.switch(this, 'selection', 'none')">
+           ctrl.switch(this, 'selection', 'draw_panel')">
             <p class="title">Complex</p>
         </a>
     </article>
 </section>
-<div ng-show="ctrl.selection === undefined" class="drawing" id="container"></div>
+<div ng-show="ctrl.selection === 'draw_panel'" class="drawing" id="container"></div>
 <aside ng-switch on="ctrl.aside" ng-show="ctrl.sideNav === true">
     <div ng-switch-when="plan">
         <div ng-repeat="button in firstPanel track by $index">
@@ -95,7 +95,7 @@
         <label class="title" for="walls_width">Enter plan width/height</label>
         <input id="walls_width" type="text" ng-model="walls.width">
         <input id="walls_height" type="text" ng-model="walls.height">
-        <a class="add" ng-click="ctrl.add(this, 'walls'); ctrl.switch(this, 'modal', false); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'none')">Create</a>
+        <a class="add" ng-click="ctrl.add(this, 'walls'); ctrl.switch(this, 'modal', false); ctrl.switch(this, 'sideNav', true); ctrl.switch(this, 'aside', 'plan'); ctrl.switch(this, 'selection', 'draw_panel')">Create</a>
     </div>
 </div>
 <div class="background-popup" ng-show="ctrl.modal2 === true">
@@ -118,6 +118,5 @@
         <a ng-show="ctrl.KonvaService.item.target.className === 'Line'" ng-click="ctrl.switch(this, 'modal3', false); ctrl.KonvaService.changeLineLength(this)">save</a>
     </div>
 </div>
-
 </body>
 </html>

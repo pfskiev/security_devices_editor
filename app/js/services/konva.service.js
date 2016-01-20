@@ -94,7 +94,7 @@
 
                 debugger
 
-                box.on('click', function (e) {
+                box.on('click touchend', function (e) {
 
                     debugger
 
@@ -133,25 +133,23 @@
 
                 debugger
 
-                var simpleLabel = new Konva.Label({
-                    x: _this.getCoordinates().x,
-                    y: _this.getCoordinates().y,
-                    opacity: 0.75
-                });
+                //var simpleLabel = new Konva.Label({
+                //    x: _this.getCoordinates().x,
+                //    y: _this.getCoordinates().y,
+                //    opacity: 0.75
+                //});
 
-                debugger
+                //simpleLabel.add(new Konva.Tag({
+                //    fill: 'yellow'
+                //}));
 
-                simpleLabel.add(new Konva.Tag({
-                    fill: 'yellow'
-                }));
-
-                simpleLabel.add(new Konva.Text({
-                    text: shape.points[0] - shape.points[2],
-                    fontFamily: 'Calibri',
-                    fontSize: 18,
-                    padding: 5,
-                    fill: 'black'
-                }));
+                //simpleLabel.add(new Konva.Text({
+                //    text: shape.points[0] - shape.points[2],
+                //    fontFamily: 'Calibri',
+                //    fontSize: 18,
+                //    padding: 5,
+                //    fill: 'black'
+                //}));
 
                 box.on('dragend', function (e) {
 
@@ -159,7 +157,7 @@
 
                 });
 
-                box.on('click', function (e) {
+                box.on('click touchend', function (e) {
 
                     debugger
 
@@ -170,7 +168,7 @@
                 });
 
                 group.add(box)
-                layer.add(simpleLabel);
+                //layer.add(simpleLabel);
 
             }
 
@@ -203,7 +201,7 @@
 
                 });
 
-                box.on('click', function (e) {
+                box.on('click touchend', function (e) {
 
                     if(e.target.attrs.name == 'camera'){
 
@@ -250,7 +248,7 @@
 
                 debugger
 
-                box.on('click', function (e) {
+                box.on('click touchend', function (e) {
                     debugger
                     _$scope.ctrl.switch(_$scope, 'modal3', true);
                     _this.item = e;
@@ -270,7 +268,7 @@
 
         if (this.draw){
 
-            stage.on('contentClick', function(e) {
+            stage.on('contentClick touchend', function(e) {
 
                 debugger
 
@@ -286,7 +284,7 @@
             layer.add(group);
             stage.add(layer);
 
-        }, 50)
+        }, 300)
 
 
     };
@@ -488,6 +486,8 @@
     }
 
     KonvaService.prototype.getCoordinates = function ($scope){
+
+        debugger
 
         var target;
 

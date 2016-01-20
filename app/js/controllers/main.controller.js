@@ -86,25 +86,33 @@
 
     AppCtrl.prototype.checkPlan = function ($scope, index) {
 
+        var _this, _$scope;
+        _this = this;
+        _$scope = $scope;
+
         this.switch($scope, 'current', index);
+        this.$timeout(function(){
 
-        if(this.floors[this.current].plan.shapes.length > 0){
+            if(_this.floors[_this.current].plan.shapes.length > 0){
 
-            this.update($scope, this.current);
-            this.switch($scope, 'sideNav', true);
-            this.switch($scope, 'aside', 'plan');
-            this.switch($scope, 'selection', undefined);
+                _this.update(_$scope, _this.current);
+                _this.switch(_$scope, 'sideNav', true);
+                _this.switch(_$scope, 'aside', 'plan');
+                _this.switch(_$scope, 'selection', 'draw_panel');
 
-        }
+            }
 
-        else {
+            else {
 
-            this.switch($scope, 'selection', 'plan');
+                _this.switch(_$scope, 'selection', 'plan');
 
-        }
+            }
+
+        });
+
+
 
     };
-
 
     AppCtrl.prototype.add = function ($scope, name){
 
@@ -206,7 +214,7 @@
 
             debugger
 
-            var src = '../img/' + [this.floors[index].plan.shapes[i].name] + '_top.png';
+            var src = './img/' + [this.floors[index].plan.shapes[i].name] + '_top.png';
 
             debugger
 
